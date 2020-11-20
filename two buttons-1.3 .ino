@@ -13,6 +13,7 @@ const byte green =5;
 const byte red =6;
 int k,Reset=7;
 static unsigned long last_interrupt_time = 0;
+ unsigned long interrupt_time;
 EthernetClient client; 
 byte commandOn[]={0x02,0x00,0x00,0x00,0x00,0x02};// turn on command
 byte commandOff[]={0x02,0x01,0x00,0x00,0x00,0x03};// turn off command
@@ -37,7 +38,8 @@ attachInterrupt(digitalPinToInterrupt(3),Intrrupt0ff, CHANGE);
 attachInterrupt(digitalPinToInterrupt(2),Intrrupton, CHANGE);
 
 }
-void loop(){
+void loop(){ 
+  interrupt_time = millis();
  if(!client.connected()){
   Serial.println("connection failed, Reconnecting....");
   client.connect(projector, 7142);
@@ -45,12 +47,13 @@ void loop(){
    Serial.println("finally connected");
    }
   }
-delay(600); }
+delay(300); 
+}
 //============================================================
 //=============Function Declarations======================
 //---------------------the interrupt function----------------------------------------
 void  Intrrupt0ff(){// this function is called whenever the button is pressed
- unsigned long interrupt_time = millis();
+ //unsigned long interrupt_time = millis();
  // If interrupts come faster than 20000ms, assume it's a bounce and ignore
  if (interrupt_time - last_interrupt_time > 2000)
  {
@@ -66,7 +69,7 @@ void  Intrrupt0ff(){// this function is called whenever the button is pressed
  return;
 }
 void Intrrupton(){
-   unsigned long interrupt_time = millis();
+  // unsigned long interrupt_time = millis();
    if (interrupt_time - last_interrupt_time > 2000)
  {
  digitalWrite(red,LOW);
