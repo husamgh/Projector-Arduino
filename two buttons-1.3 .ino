@@ -61,6 +61,7 @@ void  Intrrupt0ff(){// this function is called whenever the button is pressed
  digitalWrite(green,LOW);
  digitalWrite(red,HIGH);
  TurnOff();
+ 
 }
  else{
   Serial.println("wait RED.............");
@@ -77,7 +78,7 @@ void Intrrupton(){
  Serial.println("turning on the projector");
  TurnOn();
 }
- else{
+if(interrupt_time - last_interrupt_time < 2000){
   Serial.println("wait GREEN...");}
 //}
 last_interrupt_time = interrupt_time;
@@ -87,14 +88,15 @@ last_interrupt_time = interrupt_time;
 //----Turn off the Projector------------------------------------------------
 void TurnOff(){
  if(client){
-  Serial.println("Sending command....");
+  Serial.println("Sending the off command....");
   client.write(commandOff,sizeof(commandOff));//turn off the projector
-  client.flush();
+  //client.flush();
   while (client.available()) {
    Serial.print(client.read());
    Serial.print(";");
    }
     }
+
  return;
   }
 //-----------------Turn on the projector----------------------------------------------
@@ -102,11 +104,12 @@ void TurnOff(){
    if(client){
     Serial.println("Sending on command....");
     client.write(commandOn,sizeof(commandOn));//turn off the projector
-    client.flush();
+    //client.flush();
     while (client.available()) {
      Serial.print(client.read());
      Serial.print(";");
      }
    }
+  
    return;
   }
